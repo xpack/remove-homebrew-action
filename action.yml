@@ -1,0 +1,60 @@
+name: 'Remove Homebrew'
+description: 'Remove Homebrew from macOS runners to avoid conflicts'
+author: 'The xPack Reproducible Build Framework'
+branding:
+  icon: 'trash-2'
+  color: 'orange'
+runs:
+  using: 'composite'
+  steps:
+    - name: Remove Homebrew
+      shell: bash
+      run: |
+        echo "Removing Homebrew from macOS runner..."
+
+        # Check if running on macOS
+        if [[ "$OSTYPE" != "darwin"* ]]; then
+          echo "This action only works on macOS runners. Skipping..."
+          exit 0
+        fi
+
+        # Check if Homebrew is installed
+        if ! command -v brew &> /dev/null; then
+          echo "Homebrew is not installed. Nothing to remove."
+          exit 0
+        fi
+
+        echo "Homebrew is installed at: $(which brew)"
+
+        # Remove Homebrew
+        echo "Removing Homebrew installation..."
+
+        # Get Homebrew prefix
+        BREW_PREFIX=$(brew --prefix)
+        echo "Homebrew prefix: $BREW_PREFIX"
+
+        # Uninstall all Homebrew packages first to clean up properly
+        echo "Removing all Homebrew packages..."
+        brew list --formula | xargs -r brew uninstall --ignore-dependencies --force || true
+        brew list --cask | xargs -r brew uninstall --force || true
+
+        # Remove Homebrew directories
+        echo "Removing Homebrew directories..."
+        sudo rm -rf "$BREW_PREFIX/Homebrew"
+        sudo rm -rf "$BREW_PREFIX/Caskroom"
+        sudo rm -rf "$BREW_PREFIX/Cellar"
+        sudo rm -rf "$BREW_PREFIX/bin/brew"
+
+        # Remove common Homebrew directories
+        sudo rm -rf /usr/local/Homebrew
+        sudo rm -rf /usr/local/Caskroom
+        sudo rm -rf /usr/local/Cellar
+        sudo rm -rf /usr/local/bin/brew
+        sudo rm -rf /opt/homebrew
+        sudo rm -rf /home/linuxbrew
+
+        # Clean up Homebrew cache and other directories
+        rm -rf ~/Library/Caches/Homebrew
+        rm -rf ~/Library/Logs/Homebrew
+
+        echo "Homebrew has been removed successfully!"
