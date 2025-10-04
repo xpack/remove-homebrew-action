@@ -1,0 +1,27 @@
+name: Test Action
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  test-action:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test remove Homebrew action
+        uses: ./
+
+      - name: Verify Homebrew is removed
+        run: |
+          if command -v brew &> /dev/null; then
+            echo "ERROR: Homebrew is still installed"
+            exit 1
+          else
+            echo "SUCCESS: Homebrew has been removed"
+          fi
