@@ -61,6 +61,6 @@ runs:
         echo 'export PATH=$(echo $PATH | tr ":" "\n" | grep -v homebrew | tr "\n" ":")' >> $GITHUB_ENV
 
         echo "Cleaning up environment variables..."
-        sed -i '' '/brew/d' ~/.bash_profile ~/.zprofile ~/.zshrc || true
+        sed -i '' '/brew/d' ~/.*profile ~/.*shrc || true
 
         echo "Homebrew has been removed successfully!"
