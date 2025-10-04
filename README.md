@@ -21,10 +21,10 @@ jobs:
     steps:
       - name: Remove Homebrew
         uses: xpack/remove-homebrew-action@v1
-      
+
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Build project
         run: ./build.sh
 ```
@@ -58,6 +58,24 @@ This action:
 - This action requires `sudo` permissions (available by default on GitHub-hosted runners)
 - The action is idempotent - it's safe to run multiple times
 - This action only removes Homebrew, not packages installed via other means
+
+## Versioning
+
+When future versions (like v1.1.0, v1.2.0, etc.) are released, update
+the v1 tag to point to the latest patch version:
+
+```sh
+git tag -f v1 v1.1.0
+git push origin v1 -f
+```
+
+## Alternate solutions
+
+There is also a script, but it does not remove individual packages.
+
+```sh
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" || true
+```
 
 ## License
 
