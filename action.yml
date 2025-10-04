@@ -57,4 +57,10 @@ runs:
         rm -rf ~/Library/Caches/Homebrew
         rm -rf ~/Library/Logs/Homebrew
 
+        echo "Updating PATH to remove Homebrew references..."
+        echo 'export PATH=$(echo $PATH | tr ":" "\n" | grep -v homebrew | tr "\n" ":")' >> $GITHUB_ENV
+
+        echo "Cleaning up environment variables..."
+        sed -i '' '/brew/d' ~/.bash_profile ~/.zprofile ~/.zshrc || true
+
         echo "Homebrew has been removed successfully!"
